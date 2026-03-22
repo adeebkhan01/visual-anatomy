@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #060e1f;
+  --color-navy-900: #0a1628;
+  --color-navy-800: #0f2035;
+  --color-navy-700: #162d4a;
+  --color-navy-600: #1e3a5f;
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-glow: #60a5fa;
+  --color-evidence-strong: #22c55e;
+  --color-evidence-moderate: #eab308;
+  --color-evidence-emerging: #3b82f6;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: var(--color-navy-950);
+  color: #e2e8f0;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Smooth transitions for panel content */
+.panel-transition-enter {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.panel-transition-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+/* Scrollbar styling for research panel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-navy-800);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-navy-600);
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-navy-700);
+}
+
+/* SVG organ hover glow */
+.organ-path {
+  transition: opacity 200ms ease, filter 200ms ease;
+  cursor: pointer;
+}
+.organ-path:hover,
+.organ-path.active {
+  filter: drop-shadow(0 0 8px var(--color-accent-glow)) drop-shadow(0 0 16px var(--color-accent-glow));
+}
