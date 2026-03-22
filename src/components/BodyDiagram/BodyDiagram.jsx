@@ -15,7 +15,7 @@ export default function BodyDiagram({
   return (
     <div className="relative w-full h-full flex items-center justify-center">
       <svg
-        viewBox="0 0 400 800"
+        viewBox="0 0 400 700"
         className="w-full h-full max-h-[85vh]"
         style={{ maxWidth: '400px' }}
       >

@@ -1,16 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ResearchList from './ResearchList';
 import SupplementList from './SupplementList';
 
-const tabs = [
-  { id: 'research', label: 'Research' },
-  { id: 'conditions', label: 'Conditions' },
-  { id: 'supplements', label: 'Supplements' },
-];
-
 export default function ResearchPanel({ organData, activeConditions }) {
-  const [activeTab, setActiveTab] = useState('research');
-
   if (!organData) {
     return (
       <div className="h-full flex items-center justify-center p-8">
@@ -22,65 +14,57 @@ export default function ResearchPanel({ organData, activeConditions }) {
     );
   }
 
-  // Gather condition-specific research
+  // Gather condition-specific research for active conditions
   const conditionResearchItems = [];
-  const relevantConditions = activeConditions.length > 0 ? activeConditions : Object.keys(organData.conditionResearch || {});
-  for (const cid of relevantConditions) {
-    const items = organData.conditionResearch?.[cid];
-    if (items && items.length > 0) {
-      conditionResearchItems.push({ conditionId: cid, items });
+  if (activeConditions.length > 0) {
+    for (const cid of activeConditions) {
+      const items = organData.conditionResearch?.[cid];
+      if (items && items.length > 0) {
+        conditionResearchItems.push({ conditionId: cid, items });
+      }
     }
   }
 
+  const hasActiveConditions = activeConditions.length > 0;
+  const hasConditionResearch = conditionResearchItems.length > 0;
+
+  // Build active condition names for the fallback message
+  const conditionNames = activeConditions
+    .map((c) => c.replace(/-/g, ' ').replace(/\b\w/g, (ch) => ch.toUpperCase()))
+    .join(', ');
+
   return (
     <div className="p-6 custom-scrollbar h-full overflow-y-auto">
-      {/* Header */}
+      {/* Organ name + description */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">{organData.name}</h2>
         <p className="text-sm text-slate-400 leading-relaxed">{organData.description}</p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-navy-800 rounded-lg p-1">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-              activeTab === tab.id
-                ? 'bg-navy-600 text-white'
-                : 'text-slate-400 hover:text-slate-300'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Tab content */}
-      {activeTab === 'research' && (
-        <ResearchList items={organData.generalResearch} title="General Research" />
+      {/* Research section */}
+      {hasActiveConditions && hasConditionResearch && (
+        conditionResearchItems.map(({ conditionId, items }) => (
+          <ResearchList
+            key={conditionId}
+            items={items}
+            title={conditionId.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+            conditionBadge={conditionId}
+          />
+        ))
       )}
 
-      {activeTab === 'conditions' && (
-        <>
-          {conditionResearchItems.length > 0 ? (
-            conditionResearchItems.map(({ conditionId, items }) => (
-              <ResearchList
-                key={conditionId}
-                items={items}
-                title={conditionId.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-              />
-            ))
-          ) : (
-            <p className="text-sm text-slate-500">No condition-specific research available for this organ.</p>
-          )}
-        </>
+      {hasActiveConditions && !hasConditionResearch && (
+        <div className="mb-6 bg-navy-800 rounded-lg p-4 border border-navy-700">
+          <p className="text-sm text-slate-400">
+            No specific research found linking <span className="text-slate-300 font-medium">{conditionNames}</span> to the <span className="text-slate-300 font-medium">{organData.name}</span>. Showing general research below.
+          </p>
+        </div>
       )}
 
-      {activeTab === 'supplements' && (
-        <SupplementList supplements={organData.supplements} />
-      )}
+      <ResearchList items={organData.generalResearch} title="General Research" />
+
+      {/* Supplements */}
+      <SupplementList supplements={organData.supplements} />
     </div>
   );
 }

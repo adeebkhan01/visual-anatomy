@@ -44,14 +44,12 @@ export default function App() {
   return (
     <div className="min-h-screen bg-navy-950 text-slate-200 flex flex-col">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-navy-700 flex flex-col lg:flex-row lg:items-center gap-4">
+      <header className="px-6 py-4 border-b border-navy-700 flex flex-wrap items-center justify-between gap-4">
         <div className="shrink-0">
           <h1 className="text-lg font-bold text-white tracking-tight">Visual Anatomy</h1>
           <p className="text-xs text-slate-500">Interactive body research explorer</p>
         </div>
-        <div className="flex-1">
-          <ConditionFilter activeConditions={activeConditions} onToggle={toggleCondition} />
-        </div>
+        <ConditionFilter activeConditions={activeConditions} onToggle={toggleCondition} />
       </header>
 
       {/* Main */}
